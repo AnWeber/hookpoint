@@ -1,0 +1,6 @@
+src
+.eslintrc.yml
+.husky
+.github
+.prettierrc.yaml
+tsconfig.json
