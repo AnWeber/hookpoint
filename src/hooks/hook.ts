@@ -46,10 +46,9 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
     this.items.push(item);
   }
 
-
-  addObjHook(
-    getAction: (obj: Omit<HookItem<TArgs,TReturn>, 'action'>) => (...args: TArgs) => Promise<TReturn | typeof HookCancel>,
-    ...objs: Omit<HookItem<TArgs,TReturn>, 'action'>[]
+  addObjHook<TObj extends Omit<HookItem<TArgs, TReturn>, 'action'>>(
+    getAction: (obj: TObj) => (...args: TArgs) => Promise<TReturn | typeof HookCancel>,
+    ...objs: TObj[]
   ): void {
     for (const obj of objs) {
       const action = getAction(obj);

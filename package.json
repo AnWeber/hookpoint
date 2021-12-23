@@ -1,6 +1,6 @@
 {
   "name": "hookpoint",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "hooks system for custom plugins",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
