@@ -1,19 +1,27 @@
 import { HookCancel, HookInterceptor, HookItem, HookTriggerContext } from '../models';
 
 export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
-  protected items: Array<HookItem<TArgs, TReturn>>;
-  protected interceptors: Array<HookInterceptor<TArgs, TReturn>>;
+  #items: Array<HookItem<TArgs, TReturn>>;
+  #interceptors: Array<HookInterceptor<TArgs, TReturn>>;
 
-  id: string;
+  get interceptors(): ReadonlyArray<HookInterceptor<TArgs, TReturn>> {
+    return this.#interceptors;
+  }
+
+  get items(): ReadonlyArray<HookItem<TArgs, TReturn>> {
+    return this.#items;
+  }
+
+  readonly id: string;
 
   constructor(protected readonly bailOut?: ((arg: TReturn) => boolean) | undefined) {
     this.id = this.constructor.name;
-    this.items = [];
-    this.interceptors = [];
+    this.#items = [];
+    this.#interceptors = [];
   }
 
   hasHook(id: string) {
-    return this.items.some(obj => obj.id === id);
+    return this.#items.some(obj => obj.id === id);
   }
 
   addHook(
@@ -32,18 +40,18 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
     if (item.before) {
       const index = Math.min(...this.getIndices(item.before));
       if (index >= 0) {
-        this.items.splice(index, 0, item);
+        this.#items.splice(index, 0, item);
         return;
       }
     }
     if (item.after) {
       const index = Math.max(...this.getIndices(item.after));
       if (index >= 0) {
-        this.items.splice(index + 1, 0, item);
+        this.#items.splice(index + 1, 0, item);
         return;
       }
     }
-    this.items.push(item);
+    this.#items.push(item);
   }
 
   addObjHook<TObj extends Omit<HookItem<TArgs, TReturn>, 'action'>>(
@@ -57,25 +65,25 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
   }
 
   private getIndices(ids: Array<string>) {
-    return ids.map(before => this.items.findIndex(obj => obj.id === before)).filter(obj => obj >= 0);
+    return ids.map(before => this.#items.findIndex(obj => obj.id === before)).filter(obj => obj >= 0);
   }
 
   removeHook(id: string): boolean {
-    const index = this.items.findIndex(obj => obj.id === id);
+    const index = this.#items.findIndex(obj => obj.id === id);
     if (index >= 0) {
-      this.items.splice(index, 1);
+      this.#items.splice(index, 1);
       return true;
     }
     return false;
   }
 
   addInterceptor(interceptor: HookInterceptor<TArgs, TReturn>): void {
-    this.interceptors.push(interceptor);
+    this.#interceptors.push(interceptor);
   }
   removeInterceptor(interceptor: HookInterceptor<TArgs, TReturn>): boolean {
-    const index = this.interceptors.indexOf(interceptor);
+    const index = this.#interceptors.indexOf(interceptor);
     if (index >= 0) {
-      this.interceptors.splice(index, 1);
+      this.#interceptors.splice(index, 1);
       return true;
     }
     return false;
@@ -85,7 +93,7 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
     const results: TReturn[] = [];
     const context: HookTriggerContext<TArgs, TReturn> = {
       index: 0,
-      length: this.items.length,
+      length: this.#items.length,
       arg: args[0],
       args,
     };
@@ -95,7 +103,7 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
     }
 
     while (context.index < context.length) {
-      context.hookItem = this.items[context.index];
+      context.hookItem = this.#items[context.index];
       if ((await this.intercept(obj => obj.beforeTrigger, context)) === false) {
         return HookCancel;
       }
@@ -127,7 +135,7 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
     ) => ((context: HookTriggerContext<TArgs, TReturn>) => Promise<boolean | void>) | undefined,
     context: HookTriggerContext<TArgs, TReturn>
   ) {
-    for (const interceptor of this.interceptors) {
+    for (const interceptor of this.#interceptors) {
       const event = method(interceptor);
       if (event) {
         const result = await event.apply(interceptor, [context]);
@@ -141,10 +149,10 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
 
   merge(hook: Hook<TArgs, TReturn, TResult>) {
     const result = this.initNew();
-    result.items.push(...this.items);
-    result.items.push(...hook.items);
-    result.interceptors.push(...this.interceptors);
-    result.interceptors.push(...hook.interceptors);
+    result.#items.push(...this.#items);
+    result.#items.push(...hook.#items);
+    result.#interceptors.push(...this.#interceptors);
+    result.#interceptors.push(...hook.#interceptors);
     return result;
   }
 

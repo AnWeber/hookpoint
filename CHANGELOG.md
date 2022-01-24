@@ -10,6 +10,12 @@
 
 - removed not needed files from publish release
 
+## 1.0.4 (2022-01-24)
+
+#### Fix
+
+- items and interceptors array is accessible as readonly Array
+
 ## 1.0.3 (2021-12-25)
 
 #### Fix
