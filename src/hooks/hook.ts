@@ -12,7 +12,7 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
     return this.#items;
   }
 
-  readonly id: string;
+  id: string;
 
   constructor(protected readonly bailOut?: ((arg: TReturn) => boolean) | undefined) {
     this.id = this.constructor.name;
@@ -33,9 +33,9 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
     }
   ): void {
     const item = {
+      ...options,
       id,
       action,
-      ...options,
     };
     if (item.before) {
       const index = Math.min(...this.getIndices(item.before));

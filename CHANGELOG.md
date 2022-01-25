@@ -10,6 +10,12 @@
 
 - removed not needed files from publish release
 
+## 1.1.0 (2022-01-24)
+
+#### Feature
+
+- additional description on hook (only display purposes)
+
 ## 1.0.4 (2022-01-24)
 
 #### Fix
