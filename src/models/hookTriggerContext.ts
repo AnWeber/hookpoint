@@ -6,4 +6,5 @@ export interface HookTriggerContext<TArgs extends unknown[], TReturn> {
   arg: TArgs[0];
   args: TArgs;
   hookItem?: HookItem<TArgs, TReturn>;
+  results: Array<TReturn>;
 }

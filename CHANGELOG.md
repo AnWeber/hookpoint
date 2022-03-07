@@ -1,3 +1,9 @@
+## 1.2.0 (2021-03-07)
+
+#### Features
+
+- add results to hookTriggerContext
+
 ## 1.1.1 (2021-03-07)
 
 #### Fix

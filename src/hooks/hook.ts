@@ -96,6 +96,7 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
       length: this.#items.length,
       arg: args[0],
       args,
+      results,
     };
 
     if ((await this.intercept(obj => obj.beforeLoop, context)) === false) {
