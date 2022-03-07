@@ -1,3 +1,15 @@
+## 1.1.1 (2021-03-07)
+
+#### Fix
+
+- waterfall hook allows undefined as valid return
+
+## 1.1.0 (2021-01-25)
+
+#### Feature
+
+- add description
+
 ## 1.0.2 (2021-12-23)
 
 #### Fix
