@@ -1,6 +1,6 @@
-import { HookCancel, HookInterceptor, HookItem, HookTriggerContext } from '../models';
+import { IHook, HookCancel, HookInterceptor, HookItem, HookTriggerContext } from '../models';
 
-export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
+export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements IHook<TArgs, TReturn, TResult> {
   #items: Array<HookItem<TArgs, TReturn>>;
   #interceptors: Array<HookInterceptor<TArgs, TReturn>>;
 
@@ -97,6 +97,7 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> {
       arg: args[0],
       args,
       results,
+      hook: this,
     };
 
     if ((await this.intercept(obj => obj.beforeLoop, context)) === false) {

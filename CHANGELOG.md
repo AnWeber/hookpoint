@@ -1,3 +1,9 @@
+## 1.3.0 (2021-04-21)
+
+#### Features
+
+- add `trigger` function to interceptor hook context
+
 ## 1.2.0 (2021-03-07)
 
 #### Features

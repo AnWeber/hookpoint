@@ -1,6 +1,10 @@
 import { Hook } from './hook';
 
-export class LastOutHook<TArgs extends unknown[], TReturn> extends Hook<TArgs, TReturn | undefined, TReturn | undefined> {
+export class LastOutHook<TArgs extends unknown[], TReturn> extends Hook<
+  TArgs,
+  TReturn | undefined,
+  TReturn | undefined
+> {
   constructor(bailOut?: ((arg: TReturn | undefined) => boolean) | undefined) {
     super(bailOut);
   }
