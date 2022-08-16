@@ -51,7 +51,14 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
         return;
       }
     }
+    const afterItems = [];
+    const findAfterItem = () => this.#items.findIndex(item => item.after?.includes(id));
+    for (let afterIdx = findAfterItem(); afterIdx >= 0; afterIdx = findAfterItem()) {
+      const removedAfterItem = this.#items.splice(afterIdx, 1);
+      afterItems.push(...removedAfterItem);
+    }
     this.#items.push(item);
+    this.#items.push(...afterItems);
   }
 
   addObjHook<TObj extends Omit<HookItem<TArgs, TReturn>, 'action'>>(
