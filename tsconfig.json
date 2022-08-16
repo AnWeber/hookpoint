@@ -26,8 +26,8 @@
 		"tsconfig.build.json"
 	],
 	"exclude": [
+		"src/**/__tests__/*.ts",
 		"node_modules",
-		"dist",
-		"buildSrc"
+		"dist"
 	]
 }
