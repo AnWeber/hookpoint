@@ -34,23 +34,25 @@ describe('hook', () => {
 
       expect(hook.items.map(obj => obj.id)).toStrictEqual(['a', 'b','c']);
     });
-    it('should change order, if after added before after id', async () => {
+    it('should change order, if after added before ref id', async () => {
       const hook = new TestHook();
 
-      hook.addHook('a', () => true);
+      hook.addHook('a', () => true, {
+        after: ['b']
+      });
       hook.addHook('b', () => true, {
         after: ['c']
       });
       hook.addHook('c', () => true);
 
-      expect(hook.items.map(obj => obj.id)).toStrictEqual(['a','c','b']);
+      expect(hook.items.map(obj => obj.id)).toStrictEqual(['c','b','a']);
     });
-    it('should change order, if before added after before id', async () => {
+    it('should change order, if before added before ref id', async () => {
       const hook = new TestHook();
 
       hook.addHook('a', () => true);
       hook.addHook('b', () => true, {
-        before: ['a']
+        before: ['c']
       });
       hook.addHook('c', () => true, {
         before: ['a']
