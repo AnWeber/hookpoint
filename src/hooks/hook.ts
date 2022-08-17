@@ -37,23 +37,14 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
       id,
       action,
     };
+    const afterItems = [];
+    const findAfterItem = () => this.#items.findIndex(item => item.after?.includes(id));
+    for (let afterIdx = findAfterItem(); afterIdx >= 0; afterIdx = findAfterItem()) {
+      const removedAfterItem = this.#items.splice(afterIdx, 1);
+      afterItems.push(...removedAfterItem);
+    }
     this.#items.push(item);
-
-    this.#items.sort((obj1, obj2) => {
-      if (obj1.after?.includes(obj2.id)) {
-        return 1
-      }
-      if (obj1.before?.includes(obj2.id)) {
-        return -1
-      }
-      if (obj2.after?.includes(obj1.id)) {
-        return -1
-      }
-      if (obj2.before?.includes(obj1.id)) {
-        return 1
-      }
-      return 0;
-    });
+    this.#items.push(...afterItems);
   }
 
   addObjHook<TObj extends Omit<HookItem<TArgs, TReturn>, 'action'>>(
