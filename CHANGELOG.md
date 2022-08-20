@@ -1,3 +1,9 @@
+## 2.1.0 (2022-08-20)
+
+#### Features
+
+- ensure unique id
+
 ## 2.0.0 (2022-08-20)
 
 #### Breaking Change

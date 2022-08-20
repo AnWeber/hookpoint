@@ -20,8 +20,22 @@ export class SortSet<T extends { id: string, before?: Array<string>, after?: Arr
   }
 
   add(...items: Array<T>) {
-    this.#items.push(...items);
+    for (const item of items) {
+      this.ensureUniqueId(item);
+      this.#items.push(item);
+    }
     this.#sortedItems = undefined;
+  }
+
+  private ensureUniqueId(item: T) {
+    if (!item.id) {
+      item.id = 'unknown';
+    }
+    const id = item.id;
+    let index = 1;
+    while (this.#items.some(obj => obj.id === item.id)) {
+      item.id = `${id}#${index++}`;
+    }
   }
 
   addSortSet(set: SortSet<T>) {

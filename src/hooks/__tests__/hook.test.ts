@@ -108,5 +108,22 @@ describe('hook', () => {
 
       expect(hook.items.length).toBe(3);
     });
+    it('should change id, if same id is already used', async () => {
+      const hook = new TestHook();
+
+      hook.addHook('a', () => true);
+      hook.addHook('a', () => true);
+
+      expect(hook.items.map(obj => obj.id)).toStrictEqual(['a','a#1']);
+    });
+    it('should change id, if empty id is already used', async () => {
+      const hook = new TestHook();
+
+      hook.addHook('a', () => true);
+      hook.addHook('', () => true);
+      hook.addHook('', () => true);
+
+      expect(hook.items.map(obj => obj.id)).toStrictEqual(['a','unknown','unknown#1']);
+    });
   });
 });
