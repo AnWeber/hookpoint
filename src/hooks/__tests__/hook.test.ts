@@ -47,15 +47,15 @@ describe('hook', () => {
 
       expect(hook.items.map(obj => obj.id)).toStrictEqual(['c','b','a']);
     });
-    it('should change order, if before added before ref id', async () => {
+    it('should change order, if before added after ref id', async () => {
       const hook = new TestHook();
 
       hook.addHook('a', () => true);
-      hook.addHook('b', () => true, {
-        before: ['c']
-      });
       hook.addHook('c', () => true, {
         before: ['a']
+      });
+      hook.addHook('b', () => true, {
+        before: ['c']
       });
 
       expect(hook.items.map(obj => obj.id)).toStrictEqual(['b','c','a']);
@@ -81,6 +81,24 @@ describe('hook', () => {
 
       expect(hook.items.map(obj => obj.id)).toStrictEqual(['b','a','c']);
     });
+    it('should change order, if before is added before another item', async () => {
+      const hook = new TestHook();
+
+      hook.addHook('a', () => true, {before: ['c']});
+      hook.addHook('b', () => true);
+      hook.addHook('c', () => true);
+
+      expect(hook.items.map(obj => obj.id)).toStrictEqual(['b', 'a','c']);
+    });
+    it('should change order, if after is added after another item', async () => {
+      const hook = new TestHook();
+
+      hook.addHook('a', () => true);
+      hook.addHook('b', () => true);
+      hook.addHook('c', () => true, { after: ['a']});
+
+      expect(hook.items.map(obj => obj.id)).toStrictEqual(['a','c', 'b']);
+    });
     it('should end sort on infinite loop', async () => {
       const hook = new TestHook();
 
@@ -88,7 +106,7 @@ describe('hook', () => {
       hook.addHook('b', () => true, { before: ['c']});
       hook.addHook('c', () => true, { before: ['a']});
 
-      expect(hook.items.map(obj => obj.id)).toStrictEqual(['a','b','c']);
+      expect(hook.items.length).toBe(3);
     });
   });
 });
