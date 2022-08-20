@@ -3,10 +3,10 @@ import { SortSet } from './sortSet';
 
 export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements IHook<TArgs, TReturn, TResult> {
   #items: SortSet<HookItem<TArgs, TReturn>>;
-  #interceptors: Array<HookInterceptor<TArgs, TReturn>>;
+  #interceptors: SortSet<HookInterceptor<TArgs, TReturn>>;
 
   get interceptors(): ReadonlyArray<HookInterceptor<TArgs, TReturn>> {
-    return [...this.#interceptors];
+    return [...this.#interceptors.sorted];
   }
 
   get items(): ReadonlyArray<HookItem<TArgs, TReturn>> {
@@ -18,7 +18,7 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
   constructor(protected readonly bailOut?: ((arg: TReturn) => boolean) | undefined) {
     this.id = this.constructor.name;
     this.#items = new SortSet();
-    this.#interceptors = [];
+    this.#interceptors = new SortSet();
   }
 
   hasHook(id: string) {
@@ -58,15 +58,10 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
   }
 
   addInterceptor(interceptor: HookInterceptor<TArgs, TReturn>): void {
-    this.#interceptors.push(interceptor);
+    this.#interceptors.add(interceptor);
   }
-  removeInterceptor(interceptor: HookInterceptor<TArgs, TReturn>): boolean {
-    const index = this.#interceptors.indexOf(interceptor);
-    if (index >= 0) {
-      this.#interceptors.splice(index, 1);
-      return true;
-    }
-    return false;
+  removeInterceptor(id: string): boolean {
+    return this.#interceptors.remove(id);
   }
 
   async trigger(...args: TArgs): Promise<TResult | typeof HookCancel> {
@@ -117,7 +112,7 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
     ) => ((context: HookTriggerContext<TArgs, TReturn>) => Promise<boolean | void>) | undefined,
     context: HookTriggerContext<TArgs, TReturn>
   ) {
-    for (const interceptor of this.#interceptors) {
+    for (const interceptor of this.#interceptors.sorted) {
       const event = method(interceptor);
       if (event) {
         const result = await event.apply(interceptor, [context]);
@@ -133,8 +128,8 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
     const result = this.initNew();
     result.#items.addSortSet(this.#items);
     result.#items.addSortSet(hook.#items);
-    result.#interceptors.push(...this.#interceptors);
-    result.#interceptors.push(...hook.#interceptors);
+    result.#interceptors.addSortSet(this.#interceptors);
+    result.#interceptors.addSortSet(hook.#interceptors);
     return result;
   }
 
