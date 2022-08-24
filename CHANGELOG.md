@@ -1,3 +1,9 @@
+## 2.1.1 (2022-08-24)
+
+#### Features
+
+- jest is only dev dependency
+
 ## 2.1.0 (2022-08-20)
 
 #### Features
