@@ -126,4 +126,17 @@ describe('hook', () => {
       expect(hook.items.map(obj => obj.id)).toStrictEqual(['a','unknown','unknown#1']);
     });
   });
+  describe('interceptor', () => {
+    it.only('should add and remove interceptor', async () => {
+      const hook = new TestHook();
+
+      const id = "testInterceptor";
+      hook.addInterceptor({ id });
+      hook.removeInterceptor(id);
+
+
+
+      expect(hook.interceptors.length).toBe(0);
+    });
+  });
 });

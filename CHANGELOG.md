@@ -1,3 +1,9 @@
+## 2.1.2 (2022-09-27)
+
+#### Fix
+
+- removeInterceptor does really remove Interceptor (#3)
+
 ## 2.1.1 (2022-08-24)
 
 #### Features

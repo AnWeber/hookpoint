@@ -45,7 +45,7 @@ export class SortSet<T extends { id: string, before?: Array<string>, after?: Arr
   remove(id: string) {
     const index = this.#items.findIndex(obj => obj.id === id);
     if (index >= 0) {
-      this.#items.splice(index, 0);
+      this.#items.splice(index, 1);
       this.#sortedItems = undefined;
       return true;
     }
