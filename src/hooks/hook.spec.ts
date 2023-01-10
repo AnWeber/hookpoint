@@ -1,4 +1,4 @@
-import { Hook } from '../hook';
+import { Hook } from './hook';
 
 class TestHook extends Hook<[], boolean, boolean>{
   protected getNextArgs(): [] {
@@ -127,7 +127,7 @@ describe('hook', () => {
     });
   });
   describe('interceptor', () => {
-    it.only('should add and remove interceptor', async () => {
+    it('should add and remove interceptor', async () => {
       const hook = new TestHook();
 
       const id = "testInterceptor";
