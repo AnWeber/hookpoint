@@ -7,24 +7,24 @@ interface SortItem<T>{
 }
 
 export class SortSet<T extends { id: string, before?: Array<string>, after?: Array<string> }> {
-  #items: Array<T>;
-  #sortedItems: Array<T> | undefined;
+  private items: Set<T>;
+  private sortedItems: Array<T> | undefined;
 
   constructor() {
-    this.#items = [];
+    this.items = new Set();
   }
 
 
   hasItem(id: string) {
-    return this.#items.some(obj => obj.id === id);
+    return Array.from(this.items).some(obj => obj.id === id);
   }
 
   add(...items: Array<T>) {
     for (const item of items) {
       this.ensureUniqueId(item);
-      this.#items.push(item);
+      this.items.add(item);
     }
-    this.#sortedItems = undefined;
+    this.sortedItems = undefined;
   }
 
   private ensureUniqueId(item: T) {
@@ -33,29 +33,31 @@ export class SortSet<T extends { id: string, before?: Array<string>, after?: Arr
     }
     const id = item.id;
     let index = 1;
-    while (this.#items.some(obj => obj.id === item.id)) {
+    while (Array.from(this.items).some(obj => obj.id === item.id && obj !== item)) {
       item.id = `${id}#${index++}`;
     }
   }
 
   addSortSet(set: SortSet<T>) {
-    this.#items.push(...set.#items);
-    this.#sortedItems = undefined;
+    for (const item of set.items) {
+      this.items.add(item);
+    }
+    this.sortedItems = undefined;
   }
   remove(id: string) {
-    const index = this.#items.findIndex(obj => obj.id === id);
-    if (index >= 0) {
-      this.#items.splice(index, 1);
-      this.#sortedItems = undefined;
+    const item = Array.from(this.items).find(obj => obj.id === id);
+    if (item) {
+      this.items.delete(item);
+      this.sortedItems = undefined;
       return true;
     }
     return false;
   }
 
   public get sorted() {
-    if (!this.#sortedItems) {
+    if (!this.sortedItems) {
       const sortItems = this.calculateIndex(this.prepareSortItems());
-      this.#sortedItems = sortItems.sort((obj1, obj2) => {
+      this.sortedItems = sortItems.sort((obj1, obj2) => {
         if (obj1.index < obj2.index) {
           return -1;
         }
@@ -65,16 +67,16 @@ export class SortSet<T extends { id: string, before?: Array<string>, after?: Arr
         return 0;
       }).map(obj => obj.item);
     }
-    return this.#sortedItems;
+    return this.sortedItems;
   }
 
 
   private prepareSortItems() {
     const sortItems: Array<SortItem<T>> = [];
-    const sortMap: Map<string, SortItem<T>> = new Map(this.#items.map((item => [item.id, { id: item.id, after: [], item }])));
+    const sortMap: Map<string, SortItem<T>> = new Map(Array.from(this.items).map((item => [item.id, { id: item.id, after: [], item }])));
 
     const beforeItems: Array<SortItem<T>> = [];
-    for (const item of this.#items) {
+    for (const item of this.items) {
       const sortItem = sortMap.get(item.id);
       if (sortItem) {
 

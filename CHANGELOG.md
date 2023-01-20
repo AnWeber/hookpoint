@@ -1,3 +1,9 @@
+## 2.2.1 (2023-01-20)
+
+#### Fix
+
+- prevent infinite loop if same interceptor is added twice
+
 ## 2.2.0 (2023-01-10)
 
 #### Fix
