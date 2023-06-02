@@ -134,8 +134,6 @@ describe('hook', () => {
       hook.addInterceptor({ id });
       hook.removeInterceptor(id);
 
-
-
       expect(hook.interceptors.length).toBe(0);
     });
   });

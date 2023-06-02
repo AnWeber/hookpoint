@@ -1,3 +1,9 @@
+## 2.3.0 (2023-06-02)
+
+#### Features
+
+- interceptor can trigger bail
+
 ## 2.2.1 (2023-01-20)
 
 #### Fix

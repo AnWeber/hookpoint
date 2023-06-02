@@ -69,7 +69,6 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
     const context: HookTriggerContext<TArgs, TReturn> = {
       index: 0,
       length: this.#items.sorted.length,
-      arg: args[0],
       args,
       results,
       hook: this,
@@ -88,15 +87,14 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
       if (result === HookCancel) {
         return HookCancel;
       }
-      if (this.bailOut && this.bailOut(result)) {
-        results.push(result);
-        return this.getMergedResults(results, context.args);
-      }
       results.push(result);
-      context.args = this.getNextArgs(result, context.args);
 
+      context.args = this.getNextArgs(result, context.args);
       if ((await this.intercept(obj => obj.afterTrigger, context)) === false) {
         return HookCancel;
+      }
+      if (context.bail || this.bailOut && this.bailOut(result)) {
+        return this.getMergedResults(results, context.args);
       }
       context.index++;
     }
