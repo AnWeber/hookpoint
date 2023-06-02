@@ -77,11 +77,17 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
     if ((await this.intercept(obj => obj.beforeLoop, context)) === false) {
       return HookCancel;
     }
+    if (context.bail) {
+      return this.getMergedResults(results, context.args);
+    }
 
     while (context.index < context.length) {
       context.hookItem = this.#items.sorted[context.index];
       if ((await this.intercept(obj => obj.beforeTrigger, context)) === false) {
         return HookCancel;
+      }
+      if (context.bail) {
+        return this.getMergedResults(results, context.args);
       }
       const result = await context.hookItem.action(...context.args);
       if (result === HookCancel) {

@@ -1,3 +1,9 @@
+## 2.3.1 (2023-06-02)
+
+#### Features
+
+- allow bail in beforeTrigger interceptor
+
 ## 2.3.0 (2023-06-02)
 
 #### Features
