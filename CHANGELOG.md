@@ -1,3 +1,9 @@
+## 2.3.2 (2023-06-03)
+
+#### Fixes
+
+- revert breaking change
+
 ## 2.3.1 (2023-06-02)
 
 #### Features
