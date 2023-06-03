@@ -1,3 +1,9 @@
+## 3.0.0 (2023-06.03)
+
+#### Feature
+
+- remove arg property in Hookpoint
+
 ## 2.3.2 (2023-06-03)
 
 #### Fixes

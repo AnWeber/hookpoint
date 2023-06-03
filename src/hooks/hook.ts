@@ -70,7 +70,6 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
       index: 0,
       length: this.#items.sorted.length,
       args,
-      arg: args[0],
       results,
       hook: this,
     };
