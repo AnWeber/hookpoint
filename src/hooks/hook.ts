@@ -45,12 +45,13 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
     getAction: (obj: TObj) => (...args: TArgs) => Promise<TReturn | typeof HookCancel>,
     ...objs: TObj[]
   ): void {
-    this.#items.add(...objs.map(obj => ({
-      ...obj,
-      id: obj.id,
-      action: (...args: TArgs) => getAction(obj).call(obj, ...args)
-    })));
-
+    this.#items.add(
+      ...objs.map(obj => ({
+        ...obj,
+        id: obj.id,
+        action: (...args: TArgs) => getAction(obj).call(obj, ...args),
+      }))
+    );
   }
 
   removeHook(id: string): boolean {
@@ -99,7 +100,7 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
       if ((await this.intercept(obj => obj.afterTrigger, context)) === false) {
         return HookCancel;
       }
-      if (context.bail || this.bailOut && this.bailOut(result)) {
+      if (context.bail || (this.bailOut && this.bailOut(result))) {
         return this.getMergedResults(results, context.args);
       }
       context.index++;
@@ -128,12 +129,14 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
     return true;
   }
 
-  merge(hook: Hook<TArgs, TReturn, TResult>) {
+  merge(...hooks: Array<Hook<TArgs, TReturn, TResult>>) {
     const result = this.initNew();
     result.#items.addSortSet(this.#items);
-    result.#items.addSortSet(hook.#items);
     result.#interceptors.addSortSet(this.#interceptors);
-    result.#interceptors.addSortSet(hook.#interceptors);
+    for (const hook of hooks) {
+      result.#items.addSortSet(hook.#items);
+      result.#interceptors.addSortSet(hook.#interceptors);
+    }
     return result;
   }
 
