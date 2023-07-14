@@ -130,8 +130,6 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
   }
 
   public add(...hooks: Array<Hook<TArgs, TReturn, TResult>>): void {
-    this.#items.addSortSet(this.#items);
-    this.#interceptors.addSortSet(this.#interceptors);
     for (const hook of hooks) {
       this.#items.addSortSet(hook.#items);
       this.#interceptors.addSortSet(hook.#interceptors);
@@ -140,6 +138,8 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
 
   public merge(...hooks: Array<Hook<TArgs, TReturn, TResult>>) {
     const result = this.initNew();
+    result.#items.addSortSet(this.#items);
+    result.#interceptors.addSortSet(this.#interceptors);
     result.add(...hooks);
     return result;
   }
