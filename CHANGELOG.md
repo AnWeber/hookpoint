@@ -1,3 +1,9 @@
+## 3.2.0 (2023-07-14)
+
+#### Feature
+
+- add new method `add` to add hooks
+
 ## 3.1.0 (2023-07-04)
 
 #### Feature

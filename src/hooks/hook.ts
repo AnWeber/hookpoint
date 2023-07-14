@@ -65,7 +65,7 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
     return this.#interceptors.remove(id);
   }
 
-  async trigger(...args: TArgs): Promise<TResult | typeof HookCancel> {
+  public async trigger(...args: TArgs): Promise<TResult | typeof HookCancel> {
     const results: TReturn[] = [];
     const context: HookTriggerContext<TArgs, TReturn> = {
       index: 0,
@@ -129,14 +129,18 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
     return true;
   }
 
-  merge(...hooks: Array<Hook<TArgs, TReturn, TResult>>) {
-    const result = this.initNew();
-    result.#items.addSortSet(this.#items);
-    result.#interceptors.addSortSet(this.#interceptors);
+  public add(...hooks: Array<Hook<TArgs, TReturn, TResult>>): void {
+    this.#items.addSortSet(this.#items);
+    this.#interceptors.addSortSet(this.#interceptors);
     for (const hook of hooks) {
-      result.#items.addSortSet(hook.#items);
-      result.#interceptors.addSortSet(hook.#interceptors);
+      this.#items.addSortSet(hook.#items);
+      this.#interceptors.addSortSet(hook.#interceptors);
     }
+  }
+
+  public merge(...hooks: Array<Hook<TArgs, TReturn, TResult>>) {
+    const result = this.initNew();
+    result.add(...hooks);
     return result;
   }
 
