@@ -45,7 +45,6 @@
   },
   "homepage": "https://github.com/AnWeber/hookpoint#readme",
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "^4.1.1",
     "@types/jest": "^29.5.3",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
