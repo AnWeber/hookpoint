@@ -1,19 +1,17 @@
-
-interface SortItem<T>{
+interface SortItem<T> {
   id: string;
   after: Array<SortItem<T>>;
   item: T;
   index?: number;
 }
 
-export class SortSet<T extends { id: string, before?: Array<string>, after?: Array<string> }> {
+export class SortSet<T extends { id: string; before?: Array<string>; after?: Array<string> }> {
   private items: Set<T>;
   private sortedItems: Array<T> | undefined;
 
   constructor() {
     this.items = new Set();
   }
-
 
   hasItem(id: string) {
     return Array.from(this.items).some(obj => obj.id === id);
@@ -57,34 +55,36 @@ export class SortSet<T extends { id: string, before?: Array<string>, after?: Arr
   public get sorted() {
     if (!this.sortedItems) {
       const sortItems = this.calculateIndex(this.prepareSortItems());
-      this.sortedItems = sortItems.sort((obj1, obj2) => {
-        if (obj1.index < obj2.index) {
-          return -1;
-        }
-        if (obj1.index > obj2.index) {
-          return 1;
-        }
-        return 0;
-      }).map(obj => obj.item);
+      this.sortedItems = sortItems
+        .sort((obj1, obj2) => {
+          if (obj1.index < obj2.index) {
+            return -1;
+          }
+          if (obj1.index > obj2.index) {
+            return 1;
+          }
+          return 0;
+        })
+        .map(obj => obj.item);
     }
     return this.sortedItems;
   }
 
-
   private prepareSortItems() {
     const sortItems: Array<SortItem<T>> = [];
-    const sortMap: Map<string, SortItem<T>> = new Map(Array.from(this.items).map((item => [item.id, { id: item.id, after: [], item }])));
+    const sortMap: Map<string, SortItem<T>> = new Map(
+      Array.from(this.items).map(item => [item.id, { id: item.id, after: [], item }])
+    );
 
     const beforeItems: Array<SortItem<T>> = [];
     for (const item of this.items) {
       const sortItem = sortMap.get(item.id);
       if (sortItem) {
-
         if (item.after) {
           for (const afterId of item.after) {
             const afterItem = sortMap.get(afterId);
             if (afterItem) {
-              sortItem.after.push(afterItem)
+              sortItem.after.push(afterItem);
             }
           }
         }
@@ -116,21 +116,19 @@ export class SortSet<T extends { id: string, before?: Array<string>, after?: Arr
     for (const sortItem of sortItems) {
       result.push({
         ...sortItem,
-        index: this.getIndex(sortItem, sortItems)
+        index: this.getIndex(sortItem, sortItems),
       });
     }
     return result;
   }
 
-  private getIndex(sortItem: SortItem<T>, sortItems: Array<SortItem<T>>) : number{
-
+  private getIndex(sortItem: SortItem<T>, sortItems: Array<SortItem<T>>): number {
     if (typeof sortItem.index === 'undefined') {
       if (sortItem.after.length === 0) {
         sortItem.index = sortItems.indexOf(sortItem) * 2;
       } else {
         sortItem.index = -1;
-        const afterIndex = sortItem.after.map(obj => this.getIndex(obj, sortItems))
-          .filter(obj => obj >= 0);
+        const afterIndex = sortItem.after.map(obj => this.getIndex(obj, sortItems)).filter(obj => obj >= 0);
         if (afterIndex.length > 0) {
           sortItem.index = Math.max(...afterIndex) + 1;
         }
@@ -138,6 +136,4 @@ export class SortSet<T extends { id: string, before?: Array<string>, after?: Arr
     }
     return sortItem.index;
   }
-
 }
-

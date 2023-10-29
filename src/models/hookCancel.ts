@@ -1,1 +1,1 @@
-export const HookCancel = Symbol('cancel hook run');
+export const HookCancel = Symbol.for('HookCancel');

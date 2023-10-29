@@ -1,3 +1,11 @@
+## 4.0.0 (2023-10-29)
+
+#### Feature
+
+- add onError Hook
+- afterTrigger is also called, if result is bailed
+- HookCancel is created with `Symbol.for('HookCancel')`
+
 ## 3.2.1 (2023-07-14)
 
 #### Fix

@@ -74,41 +74,45 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
       results,
       hook: this,
     };
+    try {
+      if ((await this.intercept(obj => obj.beforeLoop, context)) === false) {
+        return HookCancel;
+      }
+      if (!context.bail) {
+        while (context.index < context.length) {
+          context.hookItem = this.#items.sorted[context.index];
+          if ((await this.intercept(obj => obj.beforeTrigger, context)) === false) {
+            return HookCancel;
+          }
+          if (context.bail) {
+            context.bail = true;
+            break;
+          }
+          const result = await context.hookItem.action(...context.args);
+          if (result === HookCancel) {
+            return HookCancel;
+          }
+          results.push(result);
 
-    if ((await this.intercept(obj => obj.beforeLoop, context)) === false) {
-      return HookCancel;
-    }
-    if (context.bail) {
+          context.args = this.getNextArgs(result, context.args);
+          if ((await this.intercept(obj => obj.afterTrigger, context)) === false) {
+            return HookCancel;
+          }
+          if (context.bail || (this.bailOut && this.bailOut(result))) {
+            context.bail = true;
+            break;
+          }
+          context.index++;
+        }
+      }
+      if ((await this.intercept(obj => obj.afterLoop, context)) === false) {
+        return HookCancel;
+      }
       return this.getMergedResults(results, context.args);
+    } catch (err) {
+      await this.intercept(obj => obj.onError, context);
+      throw err;
     }
-
-    while (context.index < context.length) {
-      context.hookItem = this.#items.sorted[context.index];
-      if ((await this.intercept(obj => obj.beforeTrigger, context)) === false) {
-        return HookCancel;
-      }
-      if (context.bail) {
-        return this.getMergedResults(results, context.args);
-      }
-      const result = await context.hookItem.action(...context.args);
-      if (result === HookCancel) {
-        return HookCancel;
-      }
-      results.push(result);
-
-      context.args = this.getNextArgs(result, context.args);
-      if ((await this.intercept(obj => obj.afterTrigger, context)) === false) {
-        return HookCancel;
-      }
-      if (context.bail || (this.bailOut && this.bailOut(result))) {
-        return this.getMergedResults(results, context.args);
-      }
-      context.index++;
-    }
-    if ((await this.intercept(obj => obj.afterLoop, context)) === false) {
-      return HookCancel;
-    }
-    return this.getMergedResults(results, context.args);
   }
 
   private async intercept(
