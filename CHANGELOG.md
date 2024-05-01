@@ -1,3 +1,8 @@
+## 4.0.1 (2024-05-01)
+
+### Fix
+- ensureUniqueId on merge (Anweber/vscode-httpyac#280)
+
 ## 4.0.0 (2023-10-29)
 
 #### Feature

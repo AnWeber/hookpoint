@@ -1,6 +1,6 @@
 {
   "name": "hookpoint",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "hooks system for custom plugins",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -22,10 +22,10 @@
   },
   "scripts": {
     "format": "prettier --write --parser typescript \"src/**/*.ts?(x)\"",
-    "prepack": "npm run compile",
+    "prepack": "npm run build",
     "esbuild": "esbuild ./src/index.ts --bundle --outdir=dist/ --sourcemap --platform=node --format=cjs",
     "tsc": "tsc --declaration --emitDeclarationOnly",
-    "compile": "npm run esbuild -- --minify && npm run tsc",
+    "build": "npm run esbuild -- --minify && npm run tsc",
     "tsc-watch": "tsc --watch --project tsconfig.build.json",
     "watch": "concurrently \"npm run esbuild -- --watch\" \"npm run tsc -- --watch\"",
     "lockfile-lint": "lockfile-lint --path package-lock.json --validate-https --allowed-hosts npm --validate-checksum --validate-integrity",
@@ -45,19 +45,19 @@
   },
   "homepage": "https://github.com/AnWeber/hookpoint#readme",
   "devDependencies": {
-    "@types/jest": "^29.5.6",
-    "@typescript-eslint/eslint-plugin": "^6.9.0",
-    "@typescript-eslint/parser": "^6.9.0",
+    "@types/jest": "^29.5.12",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
     "concurrently": "^8.2.2",
-    "esbuild": "^0.19.5",
-    "eslint-config-prettier": "^9.0.0",
+    "esbuild": "^0.20.2",
+    "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint": "^8.52.0",
-    "husky": "^8.0.3",
+    "eslint": "^8.57.0",
+    "husky": "^9.0.11",
     "jest": "^29.7.0",
-    "lint-staged": "^15.0.2",
-    "lockfile-lint": "^4.12.1",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "lint-staged": "^15.2.2",
+    "lockfile-lint": "^4.13.2",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5"
   }
 }

@@ -38,6 +38,7 @@ export class SortSet<T extends { id: string; before?: Array<string>; after?: Arr
 
   addSortSet(set: SortSet<T>) {
     for (const item of set.items) {
+      this.ensureUniqueId(item);
       this.items.add(item);
     }
     this.sortedItems = undefined;
