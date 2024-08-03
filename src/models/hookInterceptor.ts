@@ -11,5 +11,5 @@ export interface HookInterceptor<TArgs extends unknown[], TReturn> {
   beforeTrigger?(context: HookTriggerContext<TArgs, TReturn>): Promise<boolean | undefined>;
   afterTrigger?(context: HookTriggerContext<TArgs, TReturn>): Promise<boolean | undefined>;
   afterLoop?(context: HookTriggerContext<TArgs, TReturn>): Promise<boolean | undefined>;
-  onError?(context: HookTriggerContext<TArgs, TReturn>): Promise<boolean | undefined>;
+  onError?(err: unknown, context: HookTriggerContext<TArgs, TReturn>): Promise<boolean | undefined>;
 }

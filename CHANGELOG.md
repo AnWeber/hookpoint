@@ -1,3 +1,8 @@
+## 4.1.0 (2024-08-03)
+
+### Feature
+- add error to onError handler
+
 ## 4.0.1 (2024-05-01)
 
 ### Fix

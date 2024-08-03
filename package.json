@@ -1,6 +1,6 @@
 {
   "name": "hookpoint",
-  "version": "4.0.1",
+  "version": "4.1.0",
   "description": "hooks system for custom plugins",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -29,7 +29,7 @@
     "tsc-watch": "tsc --watch --project tsconfig.build.json",
     "watch": "concurrently \"npm run esbuild -- --watch\" \"npm run tsc -- --watch\"",
     "lockfile-lint": "lockfile-lint --path package-lock.json --validate-https --allowed-hosts npm --validate-checksum --validate-integrity",
-    "eslint": "eslint src --ext ts",
+    "eslint": "eslint .",
     "lint": "npm run format && npm run eslint && npm run lockfile-lint",
     "prepare": "husky install",
     "test": "jest"
@@ -49,15 +49,15 @@
     "@typescript-eslint/eslint-plugin": "^7.8.0",
     "@typescript-eslint/parser": "^7.8.0",
     "concurrently": "^8.2.2",
-    "esbuild": "^0.20.2",
+    "esbuild": "^0.23.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint": "^8.57.0",
-    "husky": "^9.0.11",
+    "husky": "^9.1.4",
     "jest": "^29.7.0",
-    "lint-staged": "^15.2.2",
-    "lockfile-lint": "^4.13.2",
-    "prettier": "^3.2.5",
-    "typescript": "^5.4.5"
+    "lint-staged": "^15.2.8",
+    "lockfile-lint": "^4.14.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.5.4"
   }
 }

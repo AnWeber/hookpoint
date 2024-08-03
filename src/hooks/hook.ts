@@ -110,21 +110,21 @@ export abstract class Hook<TArgs extends unknown[], TReturn, TResult> implements
       }
       return this.getMergedResults(results, context.args);
     } catch (err) {
-      await this.intercept(obj => obj.onError, context);
+      await this.intercept(obj => obj.onError, err, context);
       throw err;
     }
   }
 
-  private async intercept(
+  private async intercept<TArguments extends unknown[]>(
     method: (
       interceptor: HookInterceptor<TArgs, TReturn>
-    ) => ((context: HookTriggerContext<TArgs, TReturn>) => Promise<boolean | void>) | undefined,
-    context: HookTriggerContext<TArgs, TReturn>
+    ) => ((...args: TArguments) => Promise<boolean | void>) | undefined,
+    ...args: TArguments
   ) {
     for (const interceptor of this.#interceptors.sorted) {
       const event = method(interceptor);
       if (event) {
-        const result = await event.apply(interceptor, [context]);
+        const result = await event.apply(interceptor, args);
         if (!result) {
           return false;
         }
